@@ -1,0 +1,54 @@
+
+Important notes about clickTk release 4.011
+
+1. Notes
+
+1.1 Open items:
+
+  - Widget TextList cannot be accessed (Windows/XP, perl 5.8.8)
+  - handling of tearoff popup menu doesn't work fine (tearoff suppressed)
+
+
+2. Installation's procedure
+
+
+
+
+2.1 Installing a new version
+  
+  - Download the clickTk intallation's archive 
+    into a dedicated folder i.e. c:\programme\clickTk
+
+  - Unpack the archive into that folder
+
+  - Create a link to the main script ctk_w.pl
+
+  - Now clickTk is ready to work .
+
+  - Start up clickTk session and open any example project.
+
+  - Get familiar with clickTk session control.
+
+
+
+2.2 Installating an upgrade
+
+
+  - Read the installation's notes.
+
+  - Download the clickTk intallation's archive 
+    into the dedicated folder. 
+
+  - Unpack the archive into a new folder.
+
+  - Merge your projects, works, template, widgets definitions and shells into the
+    new folder.
+
+  - Run the upgrade scripts if any has been provided and mentioned 
+    in the readme installation's notes.
+ 
+  - Start some sessions to check whether the new version works fine. 
+    When it works fine, then make the new version get your current version,
+    otherwise let us know about the unexpected events occurred. 
+
+Good luck !!!
