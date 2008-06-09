@@ -12,6 +12,7 @@
 =over
 
 =item Maintenance
+
 	See clickTk_maintenance.html for details about maintenance history.
 
 =back
@@ -53,7 +54,7 @@ use Tk::ItemStyle;
 use Tk::ErrorDialog;
 
 use ctkCommon;
-use ctkBase 1.02;
+use ctkBase 1.04;
 use ctkOptions 1.02;
 use ctkMenu 1.03;
 use ctkFile 1.05;
@@ -64,11 +65,11 @@ use ctkTemplate 1.01;
 use ctkApplication 1.02;
 use ctkPreview 1.01;
 use TkAnalysis 1.04;
-use ctkWidgetLib 1.07;
+use ctkWidgetLib 1.10;
 use ctkNumEntry 1.01;
 use ctkDialogBox 1.02;
-use ctkDialogs 1.07;
-use ctkParser 1.03;
+use ctkDialogs 1.08;
+use ctkParser 1.04;
 use ctkWidgetOption 1.01;
 use ctkDescriptor 1.01;
 use ctkFontDialog 1.02;
@@ -85,7 +86,7 @@ use ctkTargetCode 1.02;
 use ctkTargetScript 1.01;
 use ctkTargetSub 1.01;
 use ctkTargetPackage 1.01;
-use ctkTargetComposite 1.01;
+use ctkTargetComposite 1.02;
 use ctkDlgGetCode 1.05;
 use ctkTools 1.03;
 use ctkWidgetTreeView 1.02;
@@ -96,7 +97,7 @@ use ctkDlgDelegate 1.01;
 
 require Data::Dumper;
 
-our $version = 4.011;
+our $version = 4.012;
 
 our $debug = 0;
 

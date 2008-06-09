@@ -9,15 +9,30 @@
 =head2 Syntax
 
 
-		use ctkTargetComposite;
+	use ctkTargetComposite;
 
-		ctkTargetComposite->generate();
+	ctkTargetComposite->generate();
 
 =head2 Programming notes
 
 =over
 
-=item
+=item Methods
+
+	new
+	destroy
+	_init
+	generate
+	genConfigSpecs
+	genDelegates
+	genAdvertisedWidgets
+	genMethods
+	genTestCode
+	genCallbacks
+	parseAndSaveConfigSpec
+	parseAndSaveDelegates
+	parse (for future use)
+	load (for future use)
 
 =back
 
@@ -27,6 +42,7 @@
 	date:	28.10.2006
 	History
 			28.11.2007 MO03501 mam refactoring
+			28.05.2008 mo03801 version 1.02
 
 =cut
 
@@ -36,7 +52,7 @@ use base (qw/ctkTargetCode/);
 
 use Time::localtime;
 
-our $VERSION = 1.01;
+our $VERSION = 1.02;
 
 our $debug = 0;
 
@@ -145,13 +161,15 @@ sub genConfigSpecs {
 		push @$code,"$ctkC ConfigSpecs ";
 		push @$code,"\t\$self->ConfigSpecs(";
 		my $w = eval $file_opt->{'ConfigSpecs'};
-		map { 
-			my $v = $w->{$_};
+		map {
+			my $k = $_;
+			my $v = $w->{$k};
 			map {
-				$v->{$_} = undef unless $v->{$_};
-				$v->{$_} = defined($v->{$_}) ? $self->quoteValue($v->{$_}) : 'undef';
-			} keys %$v;
-			my $s = $self->quoteValue($_) .'=>['.$v->{-where}.','.$v->{-classname}.',' . $v->{-dbname}.',' . $v->{-default}.']';
+				$v->[$_]= undef unless ($v->[$_]);
+				$v->[$_] = defined($v->[$_]) ? $self->quoteValue($v->[$_]) : 'undef';
+			} 0 .. @$v - 1;
+			## my $s = $self->quoteValue($_) .'=>['.$v->{-where}.','.$v->{-classname}.',' . $v->{-dbname}.',' . $v->{-default}.']';
+			my $s = $self->quoteValue($k) .'=>['.join (',',@$v).']';
 			push @$code, "\t\t$s,";
 		} sort keys %$w;
 		push @$code,"\t);";
@@ -173,7 +191,7 @@ sub genDelegates {
 		push @$code,"$ctkC Delegates ";
 		push @$code,"\t\$self->Delegates(";
 		my $w = eval $file_opt->{'Delegates'};
-		map { 
+		map {
 			my $v = $w->{$_};
 			my $s = $self->quoteValue($_) .' => ';
 			if ($v->{'-subwidgetname'} =~ /\S/) {
@@ -191,7 +209,6 @@ sub genDelegates {
 	}
 	return $code
 }
-
 
 sub genAdvertisedWidgets  {
 	my $self = shift;
@@ -252,10 +269,10 @@ sub genTestCode {
 	}
 	if ($file_opt->{'Toplevel'} || $file_opt->{'modal'}) {
 		push @$code ,"my \$instance = \$$mw->$pkg(\%args);";
+		$code = $self->genOnDeleteWindow($code,$now,'instance');
 	} else {
 		push @$code ,"my \$instance = \$$mw->$pkg(\%args)->pack();";
 	}
-	$code = $self->genOnDeleteWindow($code,$now,'instance');
 	if ($file_opt->{'modal'}) {
 				push @$code ,"my \$answer = \$instance->Show();";
 	}
@@ -279,11 +296,15 @@ sub parseAndSaveConfigSpec {
 	my $self = shift;
 	my ($data) = @_;
 	my $file_opt = &main::getFile_opt;
-	$data =~s/\n//g;;
-	$data =~ s/\s+/ /g;
-	$data =~s /\$self\s*\-\>\s*ConfigSpecs//;
-	$data =~ s/\(/\{/;
-	$data =~ s/\)/\}/;
+	if ($data) {
+		$data =~s/\n//g;;
+		$data =~ s/\s+/ /g;
+		$data =~s /\$self\s*\-\>\s*ConfigSpecs//;
+		$data =~ s/\(/\{/;
+		$data =~ s/\)/\}/;
+	} else {
+		$data ='{}'
+	}
 	my $x = eval $data;
 	$file_opt->{'ConfigSpecs'} = ctkBase->dump($x)
 }
@@ -292,21 +313,25 @@ sub parseAndSaveDelegates {
 	my $self = shift;
 	my ($data) = @_;
 	my $file_opt = &main::getFile_opt;
-	$data =~ s/\n//g;
-	$data =~ s/\s+/ /g;
-	$data =~s /\$self\s*\-\>\s*Delegates//;
-	$data =~ s/\(/\{/;
-	$data =~ s/\)/\}/;
-	$data =~ s/(\$\w+)/\'$1\'/g;
+	if ($data) {
+		$data =~ s/\n//g;
+		$data =~ s/\s+/ /g;
+		$data =~s /\$self\s*\-\>\s*Delegates//;
+		$data =~ s/\(/\{/;
+		$data =~ s/\)/\}/;
+		$data =~ s/(\$\w+)/\'$1\'/g;
+	} else {
+		$data ='{}'
+	}
 	my $x = eval $data;
 	my $y = {};
 	map {
 		if ($x->{$_} =~ /^\$/) {
-			$y->{$_} = {-widgetref => $x->{$_}, -widgetname => ' '}
+			$y->{$_} = {-subwidgetref => $x->{$_}, -subwidgetname => ' '}
 		} elsif ($x->{$_} =~ /^\w+$/){
-			$y->{$_} = {-widgetname => $x->{$_}, -widgetref => ' '}
+			$y->{$_} = {-subwidgetname => $x->{$_}, -subwidgetref => ' '}
 		} else {
-			$y->{$_} = {-widgetname => ' ', -widgetref => ' '}
+			$y->{$_} = {-subwidgetname => ' ', -subwidgetref => ' '}
 		}
 	} keys %$x;
 

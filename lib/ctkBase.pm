@@ -50,11 +50,11 @@ destroy
 
 =item Methods
 
-	trace 
-	Log 
-	log 
-	getDateAndTime 
-	_dump 
+	trace
+	Log
+	log
+	getDateAndTime
+	_dump
 	dump
 	quoteValue
 
@@ -67,6 +67,7 @@ destroy
 	History
 			06.12.2007 refactoring
 			14.04.2008 version 1.03
+			31.05.2008 version 1.04
 
 =cut
 
@@ -74,7 +75,7 @@ package ctkBase;
 
 use Time::localtime;
 
-our $VERSION = 1.03;
+our $VERSION = 1.04;
 
 my $debug = 0;
 
@@ -135,7 +136,7 @@ sub _dump {
 	$d->Indent(1) ;
 	$d->Terse(1) ;
 	$Data::Dumper::Purify = 1;
-	if( Data::Dumper->can('Dumpxs') ) { 
+	if( Data::Dumper->can('Dumpxs') ) {
 		$rv = $d->Dumpxs( $rdata ) ;
 	} else {
 		$rv = $d->Dump( $rData ) ;
@@ -151,7 +152,7 @@ sub _dump {
 	Return depending on the context either an array of elements or a string concatenating all given
 	elements .
 
-	Unlike Data::Dumper methods this methods accept a list of variables or ref to variables. 
+	Unlike Data::Dumper methods this methods accept a list of variables or ref to variables.
 	A parallel array for the var names isn't required.
 
 	Examples
@@ -166,8 +167,8 @@ sub dump {
 	my $self = shift;
 	my @rv;
 	require Data::Dumper;
-	@rv = map { 
-		ref($data) ? $self->_dump($_) : $self->_dump($_)
+	@rv = map {
+		$self->_dump($_)
 	} @_;
 	return wantarray ? @rv : join ('',@rv)
 }

@@ -25,6 +25,13 @@
 
 	All methods may also be used as class methods.
 
+=head2 Maintenance
+
+	Author:	marco
+	Date:	01.01.2007
+	History:
+			26.05.2008 version 1.04
+
 =head1 Methods
 
 =cut
@@ -36,7 +43,7 @@ use base (qw/ctkBase/);
 
 use vars qw($VERSION);
 
-$VERSION = 1.03;
+$VERSION = 1.04;
 
 
 sub new {
@@ -70,6 +77,30 @@ sub string2Array {
 
 =head2 quotatX
 
+	Handle optionslist for Scrolled widgets
+
+	Shift out class name if scrolled widget
+	call QuotatY
+	unshift class name if scrolled widget
+	stringify the optionslist
+	return stringified optionslist
+
+Arguments
+
+	- ref to array of options list
+	- argument type (class name i.e. 'Scrolledlistbox')
+
+Return
+
+	- stringified option's list
+
+Exceptions
+
+	'Missing mandatory argument type'
+
+Notes
+
+	None
 =cut
 
 sub quotatX {
@@ -108,7 +139,7 @@ sub quotatX {
 
 =cut
 
-sub quotatZZ {					## U MO03801
+sub quotatZZ {
 	my $self = shift;
 	my ($opt) = @_;
 	my $rv ;
@@ -160,15 +191,15 @@ sub quotatZZ {					## U MO03801
 
 =head2 quotatZ
 
-	Make the given  optlist operational in the clickTk run time environmnt.
-	
-		- parse the given optlist by means of main::quotatZZ
-		- scan the received optlist:
-			- resolve list of option :
-				- replace <widget name> with $widgets->{<widget name>}
-			- resolve scalar variables:
-				- replace ref name with $widgets->{<ref name>} if
-				  it exists.
+	Make the given optlist operational in the clickTk run time environmnt.
+
+	- parse the given optlist by means of main::quotatZZ
+	- scan the received optlist:
+		- resolve list of option :
+			- replace <widget name> with $widgets->{<widget name>}
+		- resolve scalar variables:
+			- replace ref name with $widgets->{<ref name>} if
+			  it exists.
 
 =cut
 
@@ -213,6 +244,21 @@ sub quotatZ {
 		- resolve list values
 		- return string of options .
 
+Argument:
+
+	Ref to array of options
+
+Return
+
+	stringified options separated by commas
+
+Notes
+
+	- recursive call for arrays
+	- empty options values are set to empty string
+	- numeric values are never quoted
+	- anon blocks remain unchanged
+
 =cut
 
 sub quotatY {
@@ -235,6 +281,8 @@ sub quotatY {
 			} elsif ($c =~ /^\d+$/) {
 				$opt_list .= "$c , "
 			} elsif ($c =~ /^sub\s*\{/) {
+				$opt_list .= "$c , "
+			} elsif ($c =~ /^\s*\[\s*\]\s*$/) {
 				$opt_list .= "$c , "
 			} elsif ($c =~ /^\s*\\*[\$\&]\w+/) {
 				$opt_list .= "$c , "
@@ -327,9 +375,12 @@ my $QUOTEDSTRING1 = 2;
 my $QUOTEDSTRING2 = 4;
 my $LIST = 8;
 my $NONQUOTEDSTRING = 16;
+my $ANONBLOCK0 = 32;
+my $ANONBLOCK1 = 64;
 
 my $state = $READNEXT;
 my $c;
+my $is;
 
 	for (my $i = 0; $i < length ($string) ; $i++) {
 		$c = substr($string,$i,1);
@@ -360,7 +411,13 @@ my $c;
 			} elsif ($c eq ")" ) {
 				push @rv, $substring if defined($substring);
 				undef $substring;
+			} elsif ($c eq 's' ) {
+				push @rv, $substring if defined($substring);
+				$substring = $c;
+				$is = $i;
+				$state = $ANONBLOCK0;
 			} else {
+				push @rv, $substring if defined($substring);
 				$substring = $c;
 				$state = $NONQUOTEDSTRING
 			}
@@ -399,6 +456,36 @@ my $c;
 			} else {
 				$substring .= $c
 			}
+		} elsif($state == $ANONBLOCK0) {
+			$substring .= $c;
+			if (length($substring) == 3) {
+				if ($substring !~ /^sub/) {
+					$substring = substr($string,$is,1);
+					$i = $is;
+					undef $is;
+					$state = $NONQUOTEDSTRING
+				}
+			} elsif (length($substring) > 3) {
+				if ($c eq '{') {
+					$state = $ANONBLOCK1
+				} elsif ($c eq ' ') {
+					$substring =~ s/\s$//;
+				} else {
+					$substring = substr($string,$is,1);
+					$i = $is;
+					undef $is;
+					$state = $NONQUOTEDSTRING
+				}
+			} else {
+				# simply stack char
+			}
+		} elsif($state == $ANONBLOCK1) {
+			$substring .= $c;
+			if ($c eq '}') {
+				push @rv , $substring;
+				undef $substring;
+				$state = $READNEXT
+			} ## else {}
 		} else {
 			die "Unexpected state '$state',cannot proceed parseString"
 		}

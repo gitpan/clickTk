@@ -1,18 +1,27 @@
 $rDef = {
-  'geom' => 1,
-  'balloon' => 1,
+  'icon' => 'LabEntry',
+  'geom' => '1',
+  'file' => 'LabEntry',
   'attr' => {
-    '-pady' => 'int+',
-    '-borderwidth' => 'int+',
+    '-labelPack' => 'list',
     '-background' => 'color',
-    '-label' => 'text',
-    '-justify' => 'justify',
-    '-relief' => 'relief',
-    '-labelPack' => 'lpack',
-    '-foreground' => 'color',
-    '-textvariable' => 'text',
-    '-state' => 'menu(normal|disabled)',
+    '-width' => 'int+',
     '-padx' => 'int+',
-    '-width' => 'int+'
-  }
+    '-foreground' => 'color',
+    '-validatecommand' => 'callback',
+    '-borderwidth' => 'int+',
+    '-relief' => 'relief',
+    '-textvariable' => 'variable',
+    '-labelVariable' => 'variable',
+    '-pady' => 'int+',
+    '-label' => 'text',
+    '-justify' => 'justify'
+  },
+  'classname' => 'LabEntry',
+  'use' => 'Tk::LabEntry',
+  'nonVisual' => '0',
+  'defaultgeometrymanager' => 'pack',
+  'balloon' => '1',
+  'defaultgeometryoptions' => undef,
+  'defaultwidgetoptions' => undef
 };

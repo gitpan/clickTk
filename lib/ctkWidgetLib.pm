@@ -114,6 +114,7 @@
 			05.10.2006 version 1.06
 			20.11.2007 version 1.07
 			14.03.2008 version 1.09
+			27.05.2008 version 1.10
 
 =head1 Methods
 
@@ -124,7 +125,7 @@ package ctkWidgetLib;
 use strict;
 use base (qw/ctkBase/);
 
-our $VERSION = 1.09;
+our $VERSION = 1.10;
 
 my $FS = ($^O =~ /^mswin/i) ? '\\' : '/';
 
@@ -198,7 +199,7 @@ sub fileName {
 
 	move the widget definition file to a backup image.
 
-	That is done unlinking the actually existing backup and 
+	That is done unlinking the actually existing backup and
 	renaming the existing file to <fileName>.bak .
 
 	It returns true if the rename worked fine.
@@ -307,7 +308,9 @@ sub createNonVisualClass {
 	return $rv;
 }
 
-=head2 loadAll - load all widget into memory
+=head2 loadAll
+
+	Load all widget into memory.
 
 	This method returns ref to hash containing all actually registered widgets.
 
@@ -364,7 +367,9 @@ sub loadAll {
 	return $rv
 }
 
-=head2 load - Load a definition into memory
+=head2 load
+
+	Load a definition into memory.
 
 	This method returns a ref to an instance of type ctkWidgetLib
 	if the job has been well done, undef otherwise.
@@ -394,7 +399,7 @@ sub load {
 		};
 	my @s = <WD>;
 	close WD;
-	
+
 	$rv = eval 'my '.join '',@s;
 	if ($@) {
 		&main::log("Could not load widget def '$fName' because of ",$@,'definition ignored ');
@@ -404,9 +409,9 @@ sub load {
 	return $rv
 }
 
-=head2 save - save  widget definition
+=head2 save
 
-	The method save saves the currently active widget class definition
+	The method saves the currently active widget class definition
 	into the persistent widget definition's library.
 
 	To do that task it accesses the widget class list applying the given classname and uses Data::Dumper->Dump and returns
@@ -439,7 +444,9 @@ sub save {
 }
 
 
-=head2 saveAll - Save widgets persistently to disk
+=head2 saveAll
+
+	Save all widgets persistently to disk.
 
 	Method saveAll returns true if the job has been well done
 	undef otherwise.
@@ -535,7 +542,7 @@ $rW002 = $db -> LabFrame ( -label=>'Default options', -borderwidth=>1, -relief=>
 $rW011 = $db -> Frame ( -relief=>'flat' ) -> pack(-anchor=>'nw', -pady=>2, -fill=>'both', -side=>'top', -expand=>1, -padx=>5);
 
 $rW_widgetOptionsList = $rW011 -> Button ( -background=>'#ffffff', -command=>sub{
-					$useFileName = "Tk::$className" unless ($useFileName);
+					$useFileName = "Tk::$className" unless (defined($useFileName) && $useFileName =~ /\S/);
 					my $attrNew = ($nonVisual) ?
 					$self->editNonVisualClassOptions($db,$className,$useFileName,$attr)
 					:
@@ -680,7 +687,27 @@ sub registerWidgetClassDefinition {
 
 =head2 editWidgetOptions
 
-	This method edit the options of a widget definition.
+	This method edits the options of a widget class definition:
+		- setup a local toplevel
+		- use the requested widget
+		- instantiate a widget
+		- get the option's list
+		- set up the edit dialog arguments
+		- show the edit dialog
+		- get rid of the options marked as 'default'
+		- return a ref to the edited option's hash
+
+	Arguments
+
+		- className
+		- useFileName
+		- attr
+
+	Returns
+
+		- ref to hash with changed attributes
+
+	Notes
 
 =cut
 
@@ -696,23 +723,28 @@ sub editWidgetOptions {
 	eval "use $useFileName";
 	if ($@) {
 		&std::ShowWarningDialog("Could not use '$useFileName' because of\n\n$@ .");
+		$mw->DESTROY();
 		return undef
-	} else {}
+	} ## else {}
 	my $o = eval "\$mw->$className()";
 	if ($@) {
 		&std::ShowWarningDialog("Could not instantiate '$className' because of\n\n$@ .");
 		$hwnd->Subwidget('B_OK')->configure(-state => 'disabled');
+		$mw->DESTROY();
 		return undef;
 	} else {
 		$hwnd->Subwidget('B_OK')->configure(-state => 'normal')
 	}
 
-	return undef unless (defined($o));
+	unless (defined($o)) {
+		$mw->DESTROY();
+		return undef
+	}
 	my @opt = $o->configure();
 
 	$mw->DESTROY();
 
-	my @dropDown = sort (qw/int int+ text color float callback file text- text+ menu() variable relief widget justify anchor side photo/);
+	my @dropDown = sort (qw/int int+ text color float callback file text- text+ menu() variable relief widget justify anchor side photo list/);
 	unshift @dropDown, 'default';
 
 	my %val = ();
@@ -731,7 +763,7 @@ sub editWidgetOptions {
 	}
 
 	my $db=$hwnd->ctkDialogBox(-title=>"Widget options of $className",-buttons=>['Accept','Cancel']);
-	
+
 	my $db_lf = $db->LabFrame(-labelside=>'acrosstop',-label=>"Widget ".$className." options:")->pack();
 	my $db_lft = $db_lf->Scrolled('Tiler', -columns => 1, -scrollbars=>'oe')->pack;
 	map {
@@ -749,17 +781,29 @@ sub editWidgetOptions {
 }
 =head2 editWidgetOptions
 
-	This method edit the options of a widget definition.
+	This method edits the options of a non-visual widget definition.
+
+	Arguments
+
+		- className
+		- useFileName
+		- attr
+
+	Returns
+
+		- ref to hash with changed attributes
+
+	Notes
 
 =cut
 
-sub editNonVisualClassOptions { 						
+sub editNonVisualClassOptions {
 	my $self = shift;
 	my ($hwnd,$className,$useFileName,$attr) = @_;
 	my $rv;
 	$useFileName = $className unless($useFileName);
 
-	my @dropDown = sort (qw/int int+ text color float callback file text- text+ menu() variable relief widget justify anchor side/);
+	my @dropDown = sort (qw/int int+ text color float callback file text- text+ menu() variable relief widget justify anchor side list/);
 		unshift @dropDown, 'default';
 	my @right_pack=(qw/-side right -padx 7/);
 	my $db=$hwnd->ctkDialogBox(-title=>"Widget options of $className",-buttons=>['Accept','Cancel']);
@@ -796,15 +840,26 @@ sub editNonVisualClassOptions {
 
 	Note: this message can be issued only while a ctk_w session!
 
+	Arguments
+
+		- className
+
+	Returns
+
+		- True if the deletion including the backup did fine,
+		  undef otherwise.
+
+	Notes
+
 =cut
 
-sub deleteWidgetClass {			
+sub deleteWidgetClass {
 	my $self = shift;
 	my ($widgetClass) = @_;
 	my $rv;
 	my $w_attr = $self->widgets;
 	delete $w_attr->{$widgetClass};
-	$rv = $self->_backup($widgetClass); 
+	$rv = $self->_backup($widgetClass);
 	return $rv
 }
 

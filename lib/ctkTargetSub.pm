@@ -17,7 +17,17 @@
 
 =over
 
-=item
+=item Methods
+
+	new
+	destroy
+	_init
+	generate
+	parse
+	load
+	genTestCode
+	genVariablesLocal
+
 
 =back
 
@@ -176,7 +186,7 @@ sub genTestCode {
 		push @$code ,'print "\nanswer = \'$answer\'";';
 	} else {
 		my $args = $file_opt->{'subroutineArgs'} ;
-		if ($args) { 
+		if ($args) {
 			push @$code ,"&main::$subroutineName(\$$mw,$args);";
 		} else {
 			push @$code ,"&main::$subroutineName(\$$mw);";

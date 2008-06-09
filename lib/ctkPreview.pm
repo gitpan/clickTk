@@ -335,6 +335,7 @@ sub repaint {
 		} elsif($d->type eq 'LabEntry'){
 			my (%arg)=@arg;
 			my $w = &main::convertToList(delete $arg{'-labelPack'},\@err);
+			$w = [] unless defined($w);
 			$tmp_vars{$id} = $x->LabEntry(%arg,-labelPack=>$w);
 		} elsif($d->type eq 'Listbox') {
 			eval $stdConstructor;

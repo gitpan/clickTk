@@ -17,7 +17,18 @@
 
 =over
 
-=item
+=item Methods
+
+	new
+	destroy
+	_init
+	generate
+	genTestCode
+	genCallbacks
+	genMethods
+	parse
+	load
+
 
 =back
 

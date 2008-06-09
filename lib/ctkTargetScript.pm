@@ -17,7 +17,16 @@
 
 =over
 
-=item
+=item Methods
+
+	new
+	destroy
+	_init
+	generate
+	parse
+	load
+	genTestCode
+
 
 =back
 
@@ -90,7 +99,7 @@ sub generate {
 
 	$code = $self->genCallbacks($code,$now);
 
-	return wantarray ? @$code : $code 
+	return wantarray ? @$code : $code
 }
 
 sub parse {

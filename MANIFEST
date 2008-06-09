@@ -1,5 +1,6 @@
 ctkAssistentFuncList.txt
 ctkConfigOptions.txt
+ctk_session_Tkadmin.txt
 ctk_w.pl
 ctk_w.sh
 MANIFEST
@@ -141,6 +142,9 @@ lib/selectCursor.pl
 lib/TkAnalysis.pm
 lib/x_nonVisual.pm
 project/DialogBoxX.pl
+project/noteBook1.pl
+project/toptions.pl
+project/toptions_linux.pl
 project/t_demoArgList.pl
 project/t_demoGlobalArgList.pl
 project/t_exp_imp.pl
@@ -195,7 +199,7 @@ widgets/button.xpm
 widgets/Canvas.pl
 widgets/cascade.pl
 widgets/cascade.xpm
-widgets/checkbutton.pl
+widgets/Checkbutton.pl
 widgets/checkbutton.xpm
 widgets/command.pl
 widgets/command.xpm
@@ -259,6 +263,8 @@ widgets/xLabel.pl
 widgets/xPhoto.xpm
 widgets/x_nonVisual.pl
 work/DialogBoxX.pl
+work/noname.pl
+work/noteBook1.pl
 work/t_demoArgList.pl
 work/t_demoGlobalArgList.pl
 work/t_exp_imp.pl

@@ -23,7 +23,39 @@
 
 =over
 
-=item
+=item Methods
+
+	new
+	destroy
+	_init
+	generate
+	parse
+	load
+	genVariablesGlobal
+	genAllVariablesGlobal
+	genVariablesLocal
+	genGlobalVariablesClassVariables
+	existsTestCode
+	genCalls2Test
+	genOnDeleteWindow
+	genGcode
+	gen_TkCode
+	gen_my_variables
+	genCallbacks
+	genOptions
+	genPod
+	genUselibStrictAndUseStatements
+	genUseStatements
+	genMainWindow
+	genOtherCode
+	genUselib
+	genOrderCode
+	genWidgetCode
+	generateTarget
+	gen_OrderCode
+	normalize
+	parseTargetCode		read external data structure to internal
+
 
 =back
 
@@ -248,8 +280,8 @@ sub gen_TkCode {
 		next unless ($n);
 		$n--;
 		$wTree->[$n] =[] unless (defined $wTree->[$n]);
-		push @{$wTree->[$n]}, $i;	
-	} 
+		push @{$wTree->[$n]}, $i;
+	}
 	while (@$wTree) {
 		my $items = shift @$wTree;
 		foreach my $i(@$items) {
@@ -307,7 +339,7 @@ my $gen = 1;
 		} elsif (/^\s*sub\s+[\w_]+\s+/) {
 			$gen = 1;
 		} else {
-			## 
+			##
 		}
 		push @$code , $_  if($gen);
 	} @ctkProject::user_subroutines;
@@ -600,7 +632,7 @@ sub normalize {
 
 	This method does the followin tasks
 
-	- parse the given target, 
+	- parse the given target,
 	- save tokens into project data members and file_opt structure,
 	- display errors on the standard message dialog box.
 
@@ -678,7 +710,7 @@ sub parseTargetCode  { # read external data structure to internal
 		}
 		if ($status & $gcode) {
 			if($line =~ /^## ctk: gcode/) {
-				$status = 0; 
+				$status = 0;
 			} else {
 				push @ctkProject::user_gcode,$line;
 			}
