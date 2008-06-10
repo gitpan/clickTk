@@ -1,18 +1,44 @@
+1. What is clickTk?
 
-Important notes about clickTk release 4.012
+clickTk is a graphical editor that helps Perl/Tk programmers to create Perl/Tk 
+applications consisting of several more or less sophisticated dialogs. 
+The main goal is to generate Perl/Tk code in form of scripts, subroutines and 
+classes which can be embedded in the application with or without minor manual 
+interventions. 
+Once the dialog flow is designed and the individual dialogs have been sketched, 
+clickTk can be used to generate the corresponding Perl/Tk source code. 
+Moreover, it can be used on the one hand to easily create some different 
+versions of a dialog flow and on the other hand to refine the chosen version to 
+its ultimate state. 
+The ability to generate additional run code to the dialog definitions itself 
+allows the programmer to already do some unit tests during the development 
+session, with the advantage that the exported code has already been tested, when 
+it will run in the application environment. 
+Therefore, clickTk considerably reduces the extremely tedious and error prone 
+coding of complex widget definitions on the one hand assisting the input of 
+options with preformatted dialogs and on the other hand allowing the use of 
+templates. 
+Further, clickTk allows to separate the code related to the presentation's 
+functionality from the application logic. 
+In consequence, it is easier to develop specialized widgets, a fact that 
+simplifies the application's code and significantly increases the quality of the 
+application's design. 
 
-1. Notes
 
-1.1 Open items:
+Important notes about clickTk release 4.013
+
+2. Notes
+
+2.1 Open items:
 
   - Widget TextList cannot be accessed (Windows/XP, perl 5.8.8)
   - handling of tearoff popup menu doesn't work fine (tearoff suppressed)
 
 
-2. Installation's procedure
+3. Installation's procedure
 
 
-2.1 Installing a new version
+3.1 Installing a new version
   
   - Download the clickTk intallation's archive 
     into a dedicated folder i.e. c:\programme\clickTk
@@ -29,7 +55,7 @@ Important notes about clickTk release 4.012
 
 
 
-2.2 Installing an upgrade
+3.2 Installing an upgrade
 
 
   - Read the installation's notes.
@@ -48,5 +74,3 @@ Important notes about clickTk release 4.012
   - Start some sessions to check whether the new version works fine. 
     When it works fine, then make the new version get your current version,
     otherwise let us know about the unexpected events occurred. 
-
-Good luck !!!

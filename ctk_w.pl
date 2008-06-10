@@ -97,7 +97,7 @@ use ctkDlgDelegate 1.01;
 
 require Data::Dumper;
 
-our $version = 4.012;
+our $VERSION = 4.013;
 
 our $debug = 0;
 
@@ -254,13 +254,13 @@ my %cmdLineOpt=();
 
 ## 1.1 set up main window
 
-our $mw = MainWindow->new(-title=>&std::_title($version));
+our $mw = MainWindow->new(-title=>&std::_title($VERSION));
 	$mw->geometry($initialGeometry) if ($initialGeometry);
 
 ## 1.2 check OS
 
 if ($^O !~ /mswin|solaris|linux/i) {	## show disclaimer
-	&std::ShowWarningDialog("clickTk '$version' has been tested only on Windows and on sun solaris systems.");
+	&std::ShowWarningDialog("clickTk '$VERSION' has been tested only on Windows and on sun solaris systems.");
 } else {}
 
 # 1.3 parse command line options
@@ -276,7 +276,7 @@ ctkBase->debug($debug);
 
 &main::parseFileOption;
 
-&main::Log("Version '$version'");
+&main::Log("Version '$VERSION'");
 
 # 1.6 Load widget's class definition
 
@@ -950,7 +950,20 @@ sub Tk::Error {
 
 sub TkErrorCleanUp {
 	my ($widget) = @_;
-	## TODO
+
+
+## TODO
+## exit process if inError is ON
+## set inError to ON
+## save debug info
+## if changed()
+## then do
+##   roll back last change
+##   save the work as $projectname_rescue.pl
+##   end
+## else
+##   set inError OFF
+##   return to caller
 }
 
 =head3 clear_preview

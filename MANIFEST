@@ -1,6 +1,5 @@
 ctkAssistentFuncList.txt
 ctkConfigOptions.txt
-ctk_session_Tkadmin.txt
 ctk_w.pl
 ctk_w.sh
 MANIFEST
@@ -263,8 +262,6 @@ widgets/xLabel.pl
 widgets/xPhoto.xpm
 widgets/x_nonVisual.pl
 work/DialogBoxX.pl
-work/noname.pl
-work/noteBook1.pl
 work/t_demoArgList.pl
 work/t_demoGlobalArgList.pl
 work/t_exp_imp.pl

@@ -59,7 +59,7 @@ use Tk::TextUndo;
 
 use vars qw/$VERSION/;
 
-$VERSION = 1.10;
+$VERSION = 1.11;
 
 sub new {
 	my ($class) = shift;
@@ -592,7 +592,7 @@ sub _bindDump {
 		- ref to widget to be bindDumped
 
 	Returns
-	
+
 		- None
 
 =cut
@@ -631,7 +631,14 @@ sub showTkVariables {
 								"\nTK version    :'$Tk::version'".
 								"\nTK strictMotif:'$Tk::strictMotif'".
 								"\nTK patchLevel :'$Tk::patchLevel'".
-								"\nTK library    :'$Tk::library'",
+								"\nTK library    :'$Tk::library'".
+								"\nTK platform   :'$Tk::platform'".
+								"\nTk tearoff    :'$Tk::tearoff'".
+								"\nfileevent     :"."*fileevent".
+								"\nTk widget     :"."$Tk::widget".
+								"\nTk event      :"."$Tk::event".
+								"\ntime so far   :".Tk::Time_So_Far
+								,
 				-aspect => 300,
 				-justify => 'left',
 				-relief => 'ridge',
